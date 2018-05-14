@@ -70,7 +70,7 @@ UINT nFileTypeVQF;
 STEP_API LPCTSTR WINAPI STEPGetPluginInfo(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	return "Version 1.00 Copyright (C) 2005-2006 haseta\r\nVQF形式をサポートしています";
+	return TEXT("Version 1.00 Copyright (C) 2005-2006 haseta\r\nVQF形式をサポートしています");
 }
 
 STEP_API bool WINAPI STEPInit(UINT pID, LPCTSTR szPluginFolder)
@@ -80,7 +80,7 @@ STEP_API bool WINAPI STEPInit(UINT pID, LPCTSTR szPluginFolder)
 	nPluginID = pID;
 
 	HBITMAP hVQFBitmap = LoadBitmap(theApp.m_hInstance, MAKEINTRESOURCE(IDB_BITMAP_VQF));
-	nFileTypeVQF = STEPRegisterExt(nPluginID, "vqf", hVQFBitmap);
+	nFileTypeVQF = STEPRegisterExt(nPluginID, TEXT("vqf"), hVQFBitmap);
 	DeleteObject(hVQFBitmap);
 
 	return true;
@@ -99,7 +99,7 @@ STEP_API UINT WINAPI STEPGetAPIVersion(void)
 STEP_API LPCTSTR WINAPI STEPGetPluginName(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	return "STEP_vqf";
+	return TEXT("STEP_vqf");
 }
 
 STEP_API bool WINAPI STEPSupportSIF(UINT nFormat) {
@@ -141,16 +141,16 @@ STEP_API UINT WINAPI STEPGetColumnMax(UINT nFormat, COLUMNTYPE nColumn, bool isE
 STEP_API UINT WINAPI STEPLoad(FILE_INFO *pFileMP3, LPCTSTR szExt)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	if (stricmp(szExt, "vqf") == 0) {
+	if (_tcsicmp(szExt, TEXT("vqf")) == 0) {
 		extern	bool LoadAttributeFileVQF(FILE_INFO *pFile);
 		if (LoadAttributeFileVQF(pFileMP3) == false) {
 			CString	strMsg;
-			strMsg.Format("%s の読み込みに失敗しました", GetFullPath(pFileMP3));
-			MessageBox(NULL, strMsg, "VQFファイルの読み込み失敗", MB_ICONSTOP|MB_OK|MB_TOPMOST);
+			strMsg.Format(TEXT("%s の読み込みに失敗しました"), GetFullPath(pFileMP3));
+			MessageBox(NULL, strMsg, TEXT("VQFファイルの読み込み失敗"), MB_ICONSTOP|MB_OK|MB_TOPMOST);
 			return STEP_ERROR;
 		} else {
 			SetFormat(pFileMP3, nFileTypeVQF);
-			SetFileTypeName(pFileMP3, "VQF");
+			SetFileTypeName(pFileMP3, TEXT("VQF"));
 			return STEP_SUCCESS;
 		}
 	}
@@ -166,8 +166,8 @@ STEP_API UINT WINAPI STEPSave(FILE_INFO *pFileMP3)
 		extern bool WriteAttributeFileVQF(FILE_INFO *pFileMP3);
 		if (WriteAttributeFileVQF(pFileMP3) == false) {
 			CString	strMsg;
-			strMsg.Format("%s の書き込みに失敗しました", GetFullPath(pFileMP3));
-			MessageBox(NULL, strMsg, "VQFファイルの書き込み失敗", MB_ICONSTOP|MB_OK|MB_TOPMOST);
+			strMsg.Format(TEXT("%s の書き込みに失敗しました"), GetFullPath(pFileMP3));
+			MessageBox(NULL, strMsg, TEXT("VQFファイルの書き込み失敗"), MB_ICONSTOP|MB_OK|MB_TOPMOST);
 			return STEP_ERROR;
 		}
 		return STEP_SUCCESS;
