@@ -16,12 +16,12 @@ bool LoadAttributeFileVQF(FILE_INFO *pFileMP3)
 	//タイトル
 	data = vqf.GetField('N','A','M','E',&dwSize);
 	if(data){
-        SetTrackNameSI(pFileMP3, (const char*)data);
+        SetTrackNameSI(pFileMP3, static_cast<CString>((const char*)data));
     }
 	//アーティスト
 	data = vqf.GetField('A','U','T','H',&dwSize);
 	if(data){
-		SetArtistNameSI(pFileMP3, (const char*)data);
+		SetArtistNameSI(pFileMP3, static_cast<CString>((const char*)data));
 	}
 	//保存名
 	//data = vqf.GetField('F','I','L','E',&dwSize);
@@ -30,12 +30,12 @@ bool LoadAttributeFileVQF(FILE_INFO *pFileMP3)
 	//著作権
 	data = vqf.GetField('(','c',')',' ',&dwSize);
 	if(data){
-		SetCopyrightSI(pFileMP3, (const char*)data);
+		SetCopyrightSI(pFileMP3, static_cast<CString>((const char*)data));
 	}
     //コメント
 	data = vqf.GetField('C','O','M','T',&dwSize);
 	if(data){
-		SetCommentSI(pFileMP3, (const char*)data);
+		SetCommentSI(pFileMP3, static_cast<CString>((const char*)data));
 	}
 
 	SetPlayTime(pFileMP3, vqf.GetTime());
@@ -50,26 +50,30 @@ bool WriteAttributeFileVQF(FILE_INFO *pFileMP3)
     if(vqf.Load(GetFullPath(pFileMP3)) != ERROR_SUCCESS){
         return false;
     }
-    CString strTmp;
+    CStringA strTmp;
     //タイトル
+	strTmp = GetTrackNameSI(pFileMP3);
 	vqf.SetField('N','A','M','E',
-                (const unsigned char *)(LPCSTR)GetTrackNameSI(pFileMP3),
-                strlen(GetTrackNameSI(pFileMP3)));
+                (const unsigned char *)(LPCSTR)strTmp,
+                strlen(strTmp));
     //アーティスト
+	strTmp = GetArtistNameSI(pFileMP3);
 	vqf.SetField('A','U','T','H',
-                (const unsigned char *)(LPCSTR)GetArtistNameSI(pFileMP3),
-                strlen(GetArtistNameSI(pFileMP3)));
+                (const unsigned char *)(LPCSTR)strTmp,
+                strlen(strTmp));
     //保存名
 	//vqf.SetField('F','I','L','E',
     //              ???,
     //              ???);
     //著作権
+	strTmp = GetCopyrightSI(pFileMP3);
 	vqf.SetField('(','c',')',' ',
-		        (const unsigned char *)(LPCSTR)GetCopyrightSI(pFileMP3),
-                  strlen(GetCopyrightSI(pFileMP3)));
+		        (const unsigned char *)(LPCSTR)strTmp,
+                  strlen(strTmp));
     //コメント
+	strTmp = GetCommentSI(pFileMP3);
 	vqf.SetField('C','O','M','T',
-                (const unsigned char *)(LPCSTR)GetCommentSI(pFileMP3),
-                strlen(GetCommentSI(pFileMP3)));
+                (const unsigned char *)(LPCSTR)strTmp,
+                strlen(strTmp));
     return vqf.Save(NULL, GetFullPath(pFileMP3)) == ERROR_SUCCESS;
 }
