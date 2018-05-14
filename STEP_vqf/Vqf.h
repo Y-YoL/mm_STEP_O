@@ -82,8 +82,8 @@ public:
 	DWORD	GetSamplFreq(){return m_dwSamplingFrequency;};
 	CString GetVer(){return m_strVer;};
 	
-	DWORD	Load(const char *szFileName);
-	DWORD	Save(HWND hWnd,const char *szFileName);
+	DWORD	Load(LPCTSTR szFileName);
+	DWORD	Save(HWND hWnd, LPCTSTR szFileName);
 
 	CString GetFormatString();
 	UINT GetTime();

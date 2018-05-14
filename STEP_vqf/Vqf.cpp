@@ -92,7 +92,7 @@ DWORD CVqf::GetTotalFieldSize()
 	return dwSize;
 }
 
-DWORD CVqf::Load(const char *szFileName)
+DWORD CVqf::Load(LPCTSTR szFileName)
 {
 	DWORD	dwWin32errorCode = ERROR_SUCCESS;
 	Release();
@@ -239,7 +239,7 @@ DWORD CVqf::Load(const char *szFileName)
 	return dwWin32errorCode;
 }
 
-DWORD CVqf::Save(HWND hWnd,const char *szFileName)
+DWORD CVqf::Save(HWND hWnd, LPCTSTR szFileName)
 {
 	DWORD	dwWin32errorCode = ERROR_SUCCESS;
 	if(!m_bEnable)
@@ -316,11 +316,11 @@ DWORD CVqf::Save(HWND hWnd,const char *szFileName)
 
 	//==================テンポラリを作成==================
 	//テンポラリ名を取得
-	char szTempPath[MAX_PATH];
-	char szTempFile[MAX_PATH];
-	strcpy(szTempPath,szFileName);
+	TCHAR szTempPath[MAX_PATH];
+	TCHAR szTempFile[MAX_PATH];
+	lstrcpy(szTempPath, szFileName);
 	cutFileName(szTempPath);
-	if(!GetTempFileName(szTempPath,"tms",0,szTempFile))
+	if (!GetTempFileName(szTempPath, TEXT("tms"), 0, szTempFile))
 	{
 		dwWin32errorCode = GetLastError();
 		free(pRawData);
@@ -427,8 +427,8 @@ DWORD CVqf::Save(HWND hWnd,const char *szFileName)
 	CloseHandle(hFile);
 	
 	//オリジナルファイルを退避(リネーム)
-	char szPreFile[MAX_PATH];
-	if(!GetTempFileName(szTempPath,"tms",0,szPreFile))
+	TCHAR szPreFile[MAX_PATH];
+	if (!GetTempFileName(szTempPath, TEXT("tms"), 0, szPreFile))
 	{
 		dwWin32errorCode = GetLastError();
 		DeleteFile(szTempFile);
@@ -467,12 +467,12 @@ CString CVqf::GetFormatString()
 		return strFormat;
 	}
 
-	strFormat.Format("TwinVQ %s, %dkHz, %dkbps, %s",
-					GetVer(),
-					GetSamplFreq(),
-					GetRate(),
-					(GetStereo()&0x03)?"Stereo":"Mono"
-					);
+	strFormat.Format(
+		TEXT("TwinVQ %s, %dkHz, %dkbps, %s"),
+		GetVer(),
+		GetSamplFreq(),
+		GetRate(),
+		(GetStereo() & 0x03) ? TEXT("Stereo") : TEXT("Mono"));
 	return strFormat;
 }
 
