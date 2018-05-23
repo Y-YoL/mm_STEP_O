@@ -3,6 +3,7 @@
 #include "mpc_dec.h"
 #include "in_mpc.h"
 #include "idtag.h"
+#include <vector>
 
 bool LoadAttributeFileMPC(FILE_INFO *pFileMP3);
 bool WriteAttributeFileMPC(FILE_INFO *pFileMP3);
@@ -10,7 +11,7 @@ bool WriteAttributeFileMPC(FILE_INFO *pFileMP3);
 struct MPC_COMMENT_SET
 {
     const char *cszName;
-    void (*setFunc)(FILE_INFO*, const char*);
+    void (*setFunc)(FILE_INFO*, LPCTSTR);
 };
 struct MPC_COMMENT_GET
 {
@@ -31,6 +32,23 @@ profile_stringify(unsigned int profile)    // profile is 0...15, where 7...13 is
 
     return profile >=
         sizeof (Names) / sizeof (*Names) ? na : Names[profile];
+}
+
+namespace {
+	CStringA convert_short_path(LPCWSTR path)
+	{
+		WCHAR shortPath[MAX_PATH];
+		if (GetShortPathNameW(path, shortPath, MAX_PATH)) {
+			return shortPath;
+		}
+
+		return path;
+	}
+
+	CStringA convert_short_path(LPCSTR path)
+	{
+		return path;
+	}
 }
 
 int StreamInfo::ReadStreamInfo ( Reader* fp)
@@ -150,12 +168,12 @@ void Reader::idle()
 
 bool LoadAttributeFileMPC(FILE_INFO *pFileMP3)
 {
-    FILE *fp = fopen(GetFullPath(pFileMP3), "rb");
+    FILE *fp = _tfopen(GetFullPath(pFileMP3), TEXT("rb"));
     if(!fp)return false;
     CString strTrackNumber;
     Reader_file file(fp);
     StreamInfo MPCinfo;
-    MPCinfo.SetFilename(GetFullPath(pFileMP3));
+    MPCinfo.SetFilename(convert_short_path(GetFullPath(pFileMP3)));
     MPCinfo.ReadStreamInfo(&file);
     int i, j;
     size_t  vlen;
@@ -183,20 +201,35 @@ bool LoadAttributeFileMPC(FILE_INFO *pFileMP3)
             }
         }
         if(value){
-            char* tmp = (char *)malloc ((vlen + 1) * 2);
-            tmp[0] = 0;
-            ConvertUTF8ToANSI ( value, tmp );
-            (*mc[i].setFunc)(pFileMP3, tmp);
-            free(tmp);
+			const auto size = MultiByteToWideChar(
+				CP_UTF8,
+				0,
+				value,
+				vlen,
+				nullptr,
+				0);
+
+			std::vector<wchar_t> tmp;
+			tmp.resize(size + 1);
+
+			MultiByteToWideChar(
+				CP_UTF8,
+				0,
+				value,
+				vlen,
+				tmp.data(),
+				tmp.size());
+
+            (*mc[i].setFunc)(pFileMP3, tmp.data());
         }
         i++;
     }
-	CString strFormat;
+	CStringA strFormat;
 	strFormat.Format("%d kb/s %d Hz, Profile:%s(SV%d)", MPCinfo.simple.Bitrate/1000, (int)MPCinfo.simple.SampleFreq,
 						MPCinfo.simple.ProfileName, MPCinfo.simple.StreamVersion);
-	SetAudioFormat(pFileMP3, strFormat);
+	SetAudioFormat(pFileMP3, static_cast<CString>(strFormat));
 	if (strlen(MPCinfo.simple.Encoder) > 0) {
-		SetEncodest(pFileMP3, MPCinfo.simple.Encoder);
+		SetEncodest(pFileMP3, static_cast<CString>(MPCinfo.simple.Encoder));
 	}
 	SetPlayTime(pFileMP3, MPCinfo.simple.Duration/1000);
     return true;
@@ -204,11 +237,11 @@ bool LoadAttributeFileMPC(FILE_INFO *pFileMP3)
 
 bool WriteAttributeFileMPC(FILE_INFO *pFileMP3)
 {
-    FILE *fp = fopen(GetFullPath(pFileMP3), "r+b");
+    FILE *fp = _tfopen(GetFullPath(pFileMP3), TEXT("r+b"));
     if(!fp)return false;
     Reader_file file(fp);
     StreamInfo MPCinfo;
-    MPCinfo.SetFilename(GetFullPath(pFileMP3));
+    MPCinfo.SetFilename(convert_short_path(GetFullPath(pFileMP3)));
     MPCinfo.ReadStreamInfo(&file);
     MPC_COMMENT_GET mc[] = {
         {APE_TAG_FIELD_TITLE,   GetTrackNameSI}, //ƒ^ƒCƒgƒ‹
@@ -222,13 +255,30 @@ bool WriteAttributeFileMPC(FILE_INFO *pFileMP3)
     };
     int i = 0;
     while(mc[i].cszName){
-        char *utf8 = (char*)malloc(strlen((*mc[i].getFunc)(pFileMP3))*2+1);
-        utf8[0] = 0;
-        if(ConvertANSIToUTF8((*mc[i].getFunc)(pFileMP3), utf8 ) != 0 ) {
-            utf8[0] = 0;
-        }
-        InsertTagField(mc[i].cszName, 0, utf8, 0, 0, &MPCinfo);
-        free(utf8);
+		const auto size = WideCharToMultiByte(
+			CP_UTF8,
+			0,
+			(*mc[i].getFunc)(pFileMP3),
+			-1,
+			nullptr,
+			0,
+			nullptr,
+			nullptr);
+
+		std::vector<char> utf8;
+		utf8.resize(size);
+
+		WideCharToMultiByte(
+			CP_UTF8,
+			0,
+			(*mc[i].getFunc)(pFileMP3),
+			-1,
+			utf8.data(),
+			utf8.size(),
+			nullptr,
+			nullptr);
+
+        InsertTagField(mc[i].cszName, 0, utf8.data(), 0, 0, &MPCinfo);
         i++;
     }
     MPCinfo.tagtype = auto_tag;
