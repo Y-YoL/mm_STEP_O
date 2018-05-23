@@ -220,7 +220,7 @@ bool LoadAttributeFileMPC(FILE_INFO *pFileMP3)
 				tmp.data(),
 				tmp.size());
 
-            (*mc[i].setFunc)(pFileMP3, tmp.data());
+            (*mc[i].setFunc)(pFileMP3, static_cast<CString>(tmp.data()));
         }
         i++;
     }
@@ -255,10 +255,11 @@ bool WriteAttributeFileMPC(FILE_INFO *pFileMP3)
     };
     int i = 0;
     while(mc[i].cszName){
+		CStringW src = (*mc[i].getFunc)(pFileMP3);
 		const auto size = WideCharToMultiByte(
 			CP_UTF8,
 			0,
-			(*mc[i].getFunc)(pFileMP3),
+			src,
 			-1,
 			nullptr,
 			0,
@@ -271,7 +272,7 @@ bool WriteAttributeFileMPC(FILE_INFO *pFileMP3)
 		WideCharToMultiByte(
 			CP_UTF8,
 			0,
-			(*mc[i].getFunc)(pFileMP3),
+			src,
 			-1,
 			utf8.data(),
 			utf8.size(),
