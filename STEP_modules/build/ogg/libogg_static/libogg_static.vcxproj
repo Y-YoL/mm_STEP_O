@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{2DC0E760-7E09-41F1-ADD3-F07E64D44CF5}</ProjectGuid>
-    <RootNamespace>ogg</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{71BA8BFC-154E-42D9-88C7-4345CEA3B475}</ProjectGuid>
+    <RootNamespace>liboggstatic</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -70,124 +70,160 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)build.bat
+chcp 932
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+
+
+msbuild libogg_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-$(SolutionDir)clean.bat
-</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)clean.bat
-cmd /c $(SolutionDir)build.bat
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeReBuildCommandLine>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <NMakeOutput>$(SolutionDir)..\..\$(TargetName)\win32\VS2008$(IntDir)\libogg_static.lib</NMakeOutput>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
+
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libogg_static.lib</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <NMakeBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)build.bat
+chcp 932
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+
+
+msbuild libogg_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-$(SolutionDir)clean.bat
-</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)clean.bat
-cmd /c $(SolutionDir)build.bat
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeReBuildCommandLine>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <NMakeOutput>$(SolutionDir)..\..\$(TargetName)\win32\VS2008$(IntDir)\libogg_static.lib</NMakeOutput>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
+
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libogg_static.lib</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NMakeBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)build.bat
+chcp 932
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+
+
+msbuild libogg_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-$(SolutionDir)clean.bat
-</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)clean.bat
-cmd /c $(SolutionDir)build.bat
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeReBuildCommandLine>
-    <NMakeOutput>$(SolutionDir)..\..\$(TargetName)\win32\VS2008$(IntDir)\libogg_static.lib</NMakeOutput>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
+
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libogg_static.lib</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <NMakeBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)build.bat
+chcp 932
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+
+
+msbuild libogg_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-$(SolutionDir)clean.bat
-</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>set TargetPlatformVersion=$(TargetPlatformVersion)
-set Configuration=$(Configuration)
-set Platform=$(Platform)
 
-pushd "$(SolutionDir)..\..\$(TargetName)\win32\VS2008"
-cmd /c $(SolutionDir)clean.bat
-cmd /c $(SolutionDir)build.bat
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
 
-copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)\$(Configuration)\libogg_static.lib"
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+
 </NMakeReBuildCommandLine>
-    <NMakeOutput>$(SolutionDir)..\..\$(TargetName)\win32\VS2008$(IntDir)\libogg_static.lib</NMakeOutput>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+
+pushd "$(ProjectDir)..\..\..\ogg\win32\VS2008"
+
+chcp 932
+
+
+
+msbuild libogg_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libogg_static.lib</NMakeOutput>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -234,8 +270,12 @@ copy "$(Platform)\$(Configuration)\libogg_static.lib" "$(SolutionDir)$(Platform)
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="build.bat" />
-    <None Include="clean.bat" />
+    <ProjectReference Include="..\migrate\migrate.vcxproj">
+      <Project>{65c2323a-d93a-42de-8d4a-67279b482cc3}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
