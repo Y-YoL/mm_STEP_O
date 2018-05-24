@@ -222,6 +222,12 @@ copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Confi
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\migrate\migrate.vcxproj">
+      <Project>{de732eda-1d02-4275-9992-65105f9c43fc}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
