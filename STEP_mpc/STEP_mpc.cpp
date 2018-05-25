@@ -74,7 +74,7 @@ UINT nFileTypeMPC;
 STEP_API LPCTSTR WINAPI STEPGetPluginInfo(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	return "Version 1.00 Copyright (C) 2005-2006 haseta\r\nMusePack形式をサポートしています";
+	return TEXT("Version 1.00 Copyright (C) 2005-2006 haseta\r\nMusePack形式をサポートしています");
 }
 
 STEP_API bool WINAPI STEPInit(UINT pID, LPCTSTR szPluginFolder)
@@ -86,10 +86,10 @@ STEP_API bool WINAPI STEPInit(UINT pID, LPCTSTR szPluginFolder)
 	// INIファイルの読み込み
 	strINI = szPluginFolder;
 	strINI += "STEP_mpc.ini";
-	bOptGenreListSelect = GetPrivateProfileInt("MPC", "GenreListSelect", 0, strINI) ? true : false;
+	bOptGenreListSelect = GetPrivateProfileInt(TEXT("MPC"), TEXT("GenreListSelect"), 0, strINI) ? true : false;
 
 	HBITMAP hMPCBitmap = LoadBitmap(theApp.m_hInstance, MAKEINTRESOURCE(IDB_BITMAP_MPC));
-	nFileTypeMPC = STEPRegisterExt(nPluginID, "MPC", hMPCBitmap);
+	nFileTypeMPC = STEPRegisterExt(nPluginID, TEXT("MPC"), hMPCBitmap);
 	DeleteObject(hMPCBitmap);
 
 	return true;
@@ -108,7 +108,7 @@ STEP_API UINT WINAPI STEPGetAPIVersion(void)
 STEP_API LPCTSTR WINAPI STEPGetPluginName(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	return "STEP_mpc";
+	return TEXT("STEP_mpc");
 }
 
 STEP_API bool WINAPI STEPSupportSIF(UINT nFormat) {
@@ -161,16 +161,16 @@ STEP_API UINT WINAPI STEPGetColumnMax(UINT nFormat, COLUMNTYPE nColumn, bool isE
 STEP_API UINT WINAPI STEPLoad(FILE_INFO *pFileMP3, LPCTSTR szExt)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	if (stricmp(szExt, "MPC") == 0) {
+	if (_tcsicmp(szExt, TEXT("MPC")) == 0) {
 		extern	bool LoadAttributeFileMPC(FILE_INFO *pFile);
 		if (LoadAttributeFileMPC(pFileMP3) == false) {
 			CString	strMsg;
-			strMsg.Format("%s の読み込みに失敗しました", GetFullPath(pFileMP3));
-			MessageBox(NULL, strMsg, "MPCファイルの読み込み失敗", MB_ICONSTOP|MB_OK|MB_TOPMOST);
+			strMsg.Format(TEXT("%s の読み込みに失敗しました"), GetFullPath(pFileMP3));
+			MessageBox(NULL, strMsg, TEXT("MPCファイルの読み込み失敗"), MB_ICONSTOP|MB_OK|MB_TOPMOST);
 			return STEP_ERROR;
 		} else {
 			SetFormat(pFileMP3, nFileTypeMPC);
-			SetFileTypeName(pFileMP3, "MusePack");
+			SetFileTypeName(pFileMP3, TEXT("MusePack"));
 			return STEP_SUCCESS;
 		}
 	}
@@ -186,8 +186,8 @@ STEP_API UINT WINAPI STEPSave(FILE_INFO *pFileMP3)
 		extern bool WriteAttributeFileMPC(FILE_INFO *pFileMP3);
 		if (WriteAttributeFileMPC(pFileMP3) == false) {
 			CString	strMsg;
-			strMsg.Format("%s の書き込みに失敗しました", GetFullPath(pFileMP3));
-			MessageBox(NULL, strMsg, "MPCファイルの書き込み失敗", MB_ICONSTOP|MB_OK|MB_TOPMOST);
+			strMsg.Format(TEXT("%s の書き込みに失敗しました"), GetFullPath(pFileMP3));
+			MessageBox(NULL, strMsg, TEXT("MPCファイルの書き込み失敗"), MB_ICONSTOP|MB_OK|MB_TOPMOST);
 			return STEP_ERROR;
 		}
 		return STEP_SUCCESS;
@@ -206,6 +206,6 @@ STEP_API void WINAPI STEPShowOptionDialog(HWND hWnd)
 	if (page.DoModal() == IDOK) {
 		bOptGenreListSelect = dlg1.m_bGenreListSelect ? true : false;
 
-		WritePrivateProfileString("MPC", "GenreListSelect", bOptGenreListSelect ? "1" : "0", strINI);
+		WritePrivateProfileString(TEXT("MPC"), TEXT("GenreListSelect"), bOptGenreListSelect ? TEXT("1") : TEXT("0"), strINI);
 	}
 }
