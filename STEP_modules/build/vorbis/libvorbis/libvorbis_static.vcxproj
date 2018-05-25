@@ -18,12 +18,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\migrate\migrate.vcxproj">
+      <Project>{de732eda-1d02-4275-9992-65105f9c43fc}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{320BA50B-AD52-4E18-8485-E29A267244C1}</ProjectGuid>
     <RootNamespace>vorbis</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <ProjectName>vorbis_static</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,112 +78,120 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeBuildCommandLine>pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-
-msbuild lib$(TargetName).vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeReBuildCommandLine>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libvorbis_static.lib</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <NMakeBuildCommandLine>pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-
-msbuild lib$(TargetName).vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-</NMakeCleanCommandLine>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libvorbis_static.lib</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NMakeBuildCommandLine>pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-
-msbuild lib$(TargetName).vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeReBuildCommandLine>
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libvorbis_static.lib</NMakeOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <NMakeBuildCommandLine>pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-
-chcp 932
-
-msbuild lib$(TargetName).vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-
-copy "$(Platform)\$(Configuration)\*.lib" "$(SolutionDir)bin\$(Platform)\$(Configuration)\*.lib"
-</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>del bin\$(Platform)\$(Configuration)\*.lib
-
-pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008\libvorbis"
-chcp 932
-msbuild lib$(TargetName).vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
-</NMakeCleanCommandLine>
+    <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:build /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:rebuild /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+copy "$(Platform)\$(Configuration)\*.lib" "$(ProjectDir)$(OutDir)*.lib"
+</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>del "$(ProjectDir)$(OutDir)*.lib"
+
+pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008\libvorbis"
+
+chcp 932
+
+msbuild libvorbis_static.vcxproj /t:clean /p:WindowsTargetPlatformVersion=$(TargetPlatformVersion) /p:Configuration=$(Configuration);Platform=$(Platform)
+</NMakeCleanCommandLine>
+    <NMakeOutput>$(OutDir)libvorbis_static.lib</NMakeOutput>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

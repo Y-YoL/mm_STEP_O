@@ -18,7 +18,7 @@
     <ProjectGuid>{2470A798-8855-4CFD-B841-68C6227845CE}</ProjectGuid>
     <RootNamespace>STEP_ogg</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -84,7 +84,7 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>ogg\include;..\STEP_SDK;$(ProjectDir)..\STEP_GlobalCommand\header;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\STEP_modules\ogg\include;$(ProjectDir)..\STEP_modules\vorbis\include;ogg\include;..\STEP_SDK;$(ProjectDir)..\STEP_GlobalCommand\header;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -130,7 +130,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>ogg\include;..\STEP_SDK;$(ProjectDir)..\STEP_GlobalCommand\header;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\STEP_modules\ogg\include;$(ProjectDir)..\STEP_modules\vorbis\include;ogg\include;..\STEP_SDK;$(ProjectDir)..\STEP_GlobalCommand\header;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -155,7 +155,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <IgnoreSpecificDefaultLibraries>msvcrt;libcmt</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>msvcrt;msvcrtd;libcmt</IgnoreSpecificDefaultLibraries>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -176,7 +176,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>ogg\include;..\STEP_SDK;$(ProjectDir)..\STEP_GlobalCommand\header;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\STEP_modules\ogg\include;$(ProjectDir)..\STEP_modules\vorbis\include;ogg\include;..\STEP_SDK;$(ProjectDir)..\STEP_GlobalCommand\header;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -252,6 +252,12 @@
   <ItemGroup>
     <ProjectReference Include="..\STEP_GlobalCommand\STEP_GlobalCommand.vcxproj">
       <Project>{dbbb9b16-2475-4661-a8aa-a72282a2792e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\STEP_modules\build\ogg\libogg_static\libogg_static.vcxproj">
+      <Project>{71ba8bfc-154e-42d9-88c7-4345cea3b475}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\STEP_modules\build\vorbis\libvorbis\libvorbis_static.vcxproj">
+      <Project>{320ba50b-ad52-4e18-8485-e29a267244c1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

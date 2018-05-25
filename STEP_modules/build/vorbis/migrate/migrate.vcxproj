@@ -30,19 +30,31 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Migrate|Win32'">
-    <NMakeBuildCommandLine>pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008"
+    <NMakeBuildCommandLine>pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008"
+
+
 chcp 932
-devenv $(SolutionName)_static.sln /upgrade
+
+
+devenv vorbis_static.sln /upgrade
 </NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008"
+    <NMakeReBuildCommandLine>pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008"
+
+
+
 git checkout .
 git clean -f .vs
 git clean -f *vcxproj*
 
 chcp 932
-devenv $(SolutionName)_static.sln /upgrade
+
+
+devenv vorbis_static.sln /upgrade
 </NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>pushd "$(SolutionDir)..\..\$(SolutionName)\win32\VS2008"
+    <NMakeCleanCommandLine>pushd "$(ProjectDir)..\..\..\vorbis\win32\VS2008"
+
+
+
 git checkout .
 git clean -f .vs
 git clean -f *vcxproj*
