@@ -74,8 +74,8 @@ UINT nIDReConvRomaji;
 
 void AddConvMenu(HMENU hMenu) {
 	InsertMenu(hMenu, MF_BYPOSITION, MF_BYPOSITION | MFT_SEPARATOR, 0, NULL);
-	InsertMenu(hMenu, MF_BYPOSITION, MF_BYPOSITION | MFT_STRING, nIDReConvHiragana, "ひらがなに変換");
-	InsertMenu(hMenu, MF_BYPOSITION, MF_BYPOSITION | MFT_STRING, nIDReConvRomaji, "ローマ字に変換");
+	InsertMenu(hMenu, MF_BYPOSITION, MF_BYPOSITION | MFT_STRING, nIDReConvHiragana, TEXT("ひらがなに変換"));
+	InsertMenu(hMenu, MF_BYPOSITION, MF_BYPOSITION | MFT_STRING, nIDReConvRomaji, TEXT("ローマ字に変換"));
 }
 
 STEP_API bool WINAPI STEPInit(UINT pID, LPCTSTR szPluginFolder)
@@ -89,9 +89,9 @@ STEP_API bool WINAPI STEPInit(UINT pID, LPCTSTR szPluginFolder)
 	strINI += "STEP_reConv.ini";
 
 	nIDReConvHiragana = STEPGetCommandID();
-	STEPKeyAssign(nIDReConvHiragana, "ひらがなに変換", "STEP_reConv_KEY_RE_CONV_HIRAGANA");
+	STEPKeyAssign(nIDReConvHiragana, TEXT("ひらがなに変換"), TEXT("STEP_reConv_KEY_RE_CONV_HIRAGANA"));
 	nIDReConvRomaji = STEPGetCommandID();
-	STEPKeyAssign(nIDReConvRomaji, "ローマ字に変換", "STEP_reConv_KEY_RE_CONV_ROMAJI");
+	STEPKeyAssign(nIDReConvRomaji, TEXT("ローマ字に変換"), TEXT("STEP_reConv_KEY_RE_CONV_ROMAJI"));
 
 	return true;
 }
@@ -109,23 +109,23 @@ STEP_API UINT WINAPI STEPGetAPIVersion(void)
 STEP_API LPCTSTR WINAPI STEPGetPluginName(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	return "STEP_reConv";
+	return TEXT("STEP_reConv");
 }
 
 STEP_API LPCTSTR WINAPI STEPGetPluginInfo(void)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	return "Version 0.03 Copyright (C) 2003-2006 haseta\r\nMS-IME2000/2002によりひらがな/ローマ字に変換します";
+	return TEXT("Version 0.03 Copyright (C) 2003-2006 haseta\r\nMS-IME2000/2002によりひらがな/ローマ字に変換します");
 }
 
 STEP_API LPCTSTR WINAPI STEPGetStatusMessage(UINT nID)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 	if (nID == nIDReConvHiragana) {
-		return "選択されている範囲をひらがなに変換します";
+		return TEXT("選択されている範囲をひらがなに変換します");
 	}
 	if (nID == nIDReConvRomaji) {
-		return "選択されている範囲をローマ字に変換します";
+		return TEXT("選択されている範囲をローマ字に変換します");
 	}
 	return NULL;
 }
@@ -151,7 +151,7 @@ extern "C" {
 #endif
 
 extern	int conv_han2zens(unsigned char *, const unsigned char *, int);
-extern	int conv_zen2hans(unsigned char *, const unsigned char *, int);
+extern	int conv_zen2hans(LPTSTR , LPCTSTR, int);
 extern	void conv_kata2hira(unsigned char *);
 extern	void conv_kata_erase_dakuon(unsigned char *);
 extern	void conv_hira2kata(unsigned char *);
@@ -163,14 +163,14 @@ extern	void conv_first_upper(unsigned char *);
 #ifdef __cplusplus
 }
 #endif
-CString conv_kan2hira(HWND hWnd, unsigned char * str)
+CString conv_kan2hira(HWND hWnd, LPCTSTR str)
 {
 	CString strText = str;
 	// MS-IME2000ではうまく動いたが、ATOK16ではだめ。単語単位であればできる...
 	HIMC himc = ::ImmGetContext(hWnd);
 	DWORD dwRet = ::ImmGetConversionList(
 					 ::GetKeyboardLayout(0), himc,
-					 (const char *)str, NULL, 0,
+					 str, NULL, 0,
 					 GCL_REVERSECONVERSION);
 
 	// 読み仮名格納領域を確保 
@@ -179,7 +179,7 @@ CString conv_kan2hira(HWND hWnd, unsigned char * str)
 	// 読み仮名を取得
 	dwRet = ::ImmGetConversionList(
 					 ::GetKeyboardLayout(0), himc,
-					 (const char*)str, lpCand, dwRet,
+					 str, lpCand, dwRet,
 					 GCL_REVERSECONVERSION);
 	if (dwRet > 0 && lpCand->dwCount > 0) {
 		char *work = (char*)lpCand + lpCand->dwOffset[0];
@@ -198,66 +198,66 @@ CString conv_kan2hira(HWND hWnd, unsigned char * str)
 	return strText;
 }
 
-CString conv_romaji(HWND hwnd, unsigned char *str)
+CString conv_romaji(HWND hwnd, LPCTSTR str)
 {
-	static const char *romaji[] = {
-		"っきゃ", "KKYA", "っきゅ", "KKYU", "っきょ", "KYO",
-		"きゃ", "KYA", "きゅ", "KYU", "きょ", "KYO",
-		"っしゃ", "SSHA", "っしゅ", "SSHU", "っしょ", "SSHO",
-		"しゃ", "SHA", "しゅ", "SHU", "しょ", "SHO",
-		"っちゃ", "CCHA", "っちゅ", "CCHU", "っちょ", "CCHO",
-		"ちゃ", "CHA", "ちゅ", "CHU", "ちょ", "CHO",
-		"っにゃ", "NNYA", "っにゅ", "NNYU", "っにょ", "NNYO",
-		"にゃ", "NYA", "にゅ", "NYU", "にょ", "NYO",
-		"っひゃ", "HHYA", "っひゅ", "HHYU", "っひょ", "HHYO",
-		"ひゃ", "HYA", "ひゅ", "HYU", "ひょ", "HYO",
-		"っみゃ", "MMYA", "っみゅ", "MMYU", "っみょ", "MMYO",
-		"みゃ", "MYA", "みゅ", "MYU", "みょ", "MYO",
-		"っりゃ", "RRYA", "っりゅ", "RRYU", "っりょ", "RRYO",
-		"りゃ", "RYA", "りゅ", "RYU", "りょ", "RYO",
-		"っぎゃ", "GGYA", "っぎゅ", "GGYU", "っぎょ", "GGYO",
-		"ぎゃ", "GYA", "ぎゅ", "GYU", "ぎょ", "GYO",
-		"っじゃ", "JJA", "っじゅ", "JJU", "っじょ", "JJO",
-		"じゃ", "JA", "じゅ", "JU", "じょ", "JO",
-		"っびゃ", "BBYA", "っびゅ", "BBYU", "っびょ", "BBYO",
-		"びゃ", "BYA", "びゅ", "BYU", "びょ", "BYO",
-		"っぴゃ", "PPYA", "っぴゅ", "PPYU", "っぴょ", "PPYO",
-		"ぴゃ", "PYA", "ぴゅ", "PYU", "ぴょ", "PYO",
+	static const LPCTSTR romaji[] = {
+		TEXT("っきゃ"), TEXT("KKYA"), TEXT("っきゅ"), TEXT("KKYU"), TEXT("っきょ"), TEXT("KYO"),
+		TEXT("きゃ"), TEXT("KYA"), TEXT("きゅ"), TEXT("KYU"), TEXT("きょ"), TEXT("KYO"),
+		TEXT("っしゃ"), TEXT("SSHA"), TEXT("っしゅ"), TEXT("SSHU"), TEXT("っしょ"), TEXT("SSHO"),
+		TEXT("しゃ"), TEXT("SHA"), TEXT("しゅ"), TEXT("SHU"), TEXT("しょ"), TEXT("SHO"),
+		TEXT("っちゃ"), TEXT("CCHA"), TEXT("っちゅ"), TEXT("CCHU"), TEXT("っちょ"), TEXT("CCHO"),
+		TEXT("ちゃ"), TEXT("CHA"), TEXT("ちゅ"), TEXT("CHU"), TEXT("ちょ"), TEXT("CHO"),
+		TEXT("っにゃ"), TEXT("NNYA"), TEXT("っにゅ"), TEXT("NNYU"), TEXT("っにょ"), TEXT("NNYO"),
+		TEXT("にゃ"), TEXT("NYA"), TEXT("にゅ"), TEXT("NYU"), TEXT("にょ"), TEXT("NYO"),
+		TEXT("っひゃ"), TEXT("HHYA"), TEXT("っひゅ"), TEXT("HHYU"), TEXT("っひょ"), TEXT("HHYO"),
+		TEXT("ひゃ"), TEXT("HYA"), TEXT("ひゅ"), TEXT("HYU"), TEXT("ひょ"), TEXT("HYO"),
+		TEXT("っみゃ"), TEXT("MMYA"), TEXT("っみゅ"), TEXT("MMYU"), TEXT("っみょ"), TEXT("MMYO"),
+		TEXT("みゃ"), TEXT("MYA"), TEXT("みゅ"), TEXT("MYU"), TEXT("みょ"), TEXT("MYO"),
+		TEXT("っりゃ"), TEXT("RRYA"), TEXT("っりゅ"), TEXT("RRYU"), TEXT("っりょ"), TEXT("RRYO"),
+		TEXT("りゃ"), TEXT("RYA"), TEXT("りゅ"), TEXT("RYU"), TEXT("りょ"), TEXT("RYO"),
+		TEXT("っぎゃ"), TEXT("GGYA"), TEXT("っぎゅ"), TEXT("GGYU"), TEXT("っぎょ"), TEXT("GGYO"),
+		TEXT("ぎゃ"), TEXT("GYA"), TEXT("ぎゅ"), TEXT("GYU"), TEXT("ぎょ"), TEXT("GYO"),
+		TEXT("っじゃ"), TEXT("JJA"), TEXT("っじゅ"), TEXT("JJU"), TEXT("っじょ"), TEXT("JJO"),
+		TEXT("じゃ"), TEXT("JA"), TEXT("じゅ"), TEXT("JU"), TEXT("じょ"), TEXT("JO"),
+		TEXT("っびゃ"), TEXT("BBYA"), TEXT("っびゅ"), TEXT("BBYU"), TEXT("っびょ"), TEXT("BBYO"),
+		TEXT("びゃ"), TEXT("BYA"), TEXT("びゅ"), TEXT("BYU"), TEXT("びょ"), TEXT("BYO"),
+		TEXT("っぴゃ"), TEXT("PPYA"), TEXT("っぴゅ"), TEXT("PPYU"), TEXT("っぴょ"), TEXT("PPYO"),
+		TEXT("ぴゃ"), TEXT("PYA"), TEXT("ぴゅ"), TEXT("PYU"), TEXT("ぴょ"), TEXT("PYO"),
 
-		"っか", "KKA", "っき", "KKI", "っく", "KKU", "っけ", "KKE", "っこ", "KKO",
-		"か", "KA", "き", "KI", "く", "KU", "け", "KE", "こ", "KO",
-		"っさ", "SSA", "っし", "SSHI", "っす", "SSU", "っせ", "SSE", "っそ", "SSO",
-		"さ", "SA", "し", "SHI", "す", "SU", "せ", "SE", "そ", "SO",
-		"った", "TTA", "っち", "CCHI", "っつ", "TTSU", "って", "TTE", "っと", "TTO",
-		"た", "TA", "ち", "CHI", "つ", "TSU", "て", "TE", "と", "TO",
-		"っな", "NNA", "っに", "NNI", "っぬ", "NNU", "っね", "NNE", "っの", "NNO",
-		"な", "NA", "に", "NI", "ぬ", "NU", "ね", "NE", "の", "NO",
-		"っは", "HHA", "っひ", "HHI", "っふ", "FFU", "っへ", "HHE", "っほ", "HHO",
-		"は", "HA", "ひ", "HI", "ふ", "FU", "へ", "HE", "ほ", "HO",
-		"っま", "MMA", "っみ", "MMI", "っむ", "MMU", "っめ", "MME", "っも", "MMO",
-		"ま", "MA", "み", "MI", "む", "MU", "め", "ME", "も", "MO",
-		"っや", "YYA", "っゆ", "YUYU", "っよ", "YYO",
-		"や", "YA", "ゆ", "YU", "よ", "YO",
-		"っら", "RRA", "っり", "RRI", "っる", "RRU", "っれ", "RRE", "っろ", "RRO",
-		"ら", "RA", "り", "RI", "る", "RU", "れ", "RE", "ろ", "RO",
-		"っわ", "WWA",
-		"わ", "WA",
-		"っが", "GGA", "っぎ", "GGI", "っぐ", "GGU", "っげ", "GGE", "っご", "GGO",
-		"が", "GA", "ぎ", "GI", "ぐ", "GU", "げ", "GE", "ご", "GO",
-		"っざ", "ZZA", "っじ", "JJI", "っず", "ZZU", "っぜ", "ZZE", "っぞ", "ZZO",
-		"ざ", "ZA", "じ", "JI", "ず", "ZU", "ぜ", "ZE", "ぞ", "ZO",
-		"っだ", "DDA", "っぢ", "JJI", "っづ", "ZZU", "っで", "DDE", "っど", "DDO",
-		"だ", "DA", "ぢ", "JI", "づ", "ZU", "で", "DE", "ど", "DO",
-		"っば", "BBA", "っび", "BBI", "っぶ", "BBU", "っべ", "BBE", "っぼ", "BBO",
-		"ば", "BA", "び", "BI", "ぶ", "BU", "べ", "BE", "ぼ", "BO",
-		"っぱ", "PPA", "っぴ", "PPI", "っぷ", "PPU", "っぺ", "PPE", "っぽ", "PPO",
-		"ぱ", "PA", "ぴ", "PI", "ぷ", "PU", "ぺ", "PE", "ぽ", "PO",
+		TEXT("っか"), TEXT("KKA"), TEXT("っき"), TEXT("KKI"), TEXT("っく"), TEXT("KKU"), TEXT("っけ"), TEXT("KKE"), TEXT("っこ"), TEXT("KKO"),
+		TEXT("か"), TEXT("KA"), TEXT("き"), TEXT("KI"), TEXT("く"), TEXT("KU"), TEXT("け"), TEXT("KE"), TEXT("こ"), TEXT("KO"),
+		TEXT("っさ"), TEXT("SSA"), TEXT("っし"), TEXT("SSHI"), TEXT("っす"), TEXT("SSU"), TEXT("っせ"), TEXT("SSE"), TEXT("っそ"), TEXT("SSO"),
+		TEXT("さ"), TEXT("SA"), TEXT("し"), TEXT("SHI"), TEXT("す"), TEXT("SU"), TEXT("せ"), TEXT("SE"), TEXT("そ"), TEXT("SO"),
+		TEXT("った"), TEXT("TTA"), TEXT("っち"), TEXT("CCHI"), TEXT("っつ"), TEXT("TTSU"), TEXT("って"), TEXT("TTE"), TEXT("っと"), TEXT("TTO"),
+		TEXT("た"), TEXT("TA"), TEXT("ち"), TEXT("CHI"), TEXT("つ"), TEXT("TSU"), TEXT("て"), TEXT("TE"), TEXT("と"), TEXT("TO"),
+		TEXT("っな"), TEXT("NNA"), TEXT("っに"), TEXT("NNI"), TEXT("っぬ"), TEXT("NNU"), TEXT("っね"), TEXT("NNE"), TEXT("っの"), TEXT("NNO"),
+		TEXT("な"), TEXT("NA"), TEXT("に"), TEXT("NI"), TEXT("ぬ"), TEXT("NU"), TEXT("ね"), TEXT("NE"), TEXT("の"), TEXT("NO"),
+		TEXT("っは"), TEXT("HHA"), TEXT("っひ"), TEXT("HHI"), TEXT("っふ"), TEXT("FFU"), TEXT("っへ"), TEXT("HHE"), TEXT("っほ"), TEXT("HHO"),
+		TEXT("は"), TEXT("HA"), TEXT("ひ"), TEXT("HI"), TEXT("ふ"), TEXT("FU"), TEXT("へ"), TEXT("HE"), TEXT("ほ"), TEXT("HO"),
+		TEXT("っま"), TEXT("MMA"), TEXT("っみ"), TEXT("MMI"), TEXT("っむ"), TEXT("MMU"), TEXT("っめ"), TEXT("MME"), TEXT("っも"), TEXT("MMO"),
+		TEXT("ま"), TEXT("MA"), TEXT("み"), TEXT("MI"), TEXT("む"), TEXT("MU"), TEXT("め"), TEXT("ME"), TEXT("も"), TEXT("MO"),
+		TEXT("っや"), TEXT("YYA"), TEXT("っゆ"), TEXT("YUYU"), TEXT("っよ"), TEXT("YYO"),
+		TEXT("や"), TEXT("YA"), TEXT("ゆ"), TEXT("YU"), TEXT("よ"), TEXT("YO"),
+		TEXT("っら"), TEXT("RRA"), TEXT("っり"), TEXT("RRI"), TEXT("っる"), TEXT("RRU"), TEXT("っれ"), TEXT("RRE"), TEXT("っろ"), TEXT("RRO"),
+		TEXT("ら"), TEXT("RA"), TEXT("り"), TEXT("RI"), TEXT("る"), TEXT("RU"), TEXT("れ"), TEXT("RE"), TEXT("ろ"), TEXT("RO"),
+		TEXT("っわ"), TEXT("WWA"),
+		TEXT("わ"), TEXT("WA"),
+		TEXT("っが"), TEXT("GGA"), TEXT("っぎ"), TEXT("GGI"), TEXT("っぐ"), TEXT("GGU"), TEXT("っげ"), TEXT("GGE"), TEXT("っご"), TEXT("GGO"),
+		TEXT("が"), TEXT("GA"), TEXT("ぎ"), TEXT("GI"), TEXT("ぐ"), TEXT("GU"), TEXT("げ"), TEXT("GE"), TEXT("ご"), TEXT("GO"),
+		TEXT("っざ"), TEXT("ZZA"), TEXT("っじ"), TEXT("JJI"), TEXT("っず"), TEXT("ZZU"), TEXT("っぜ"), TEXT("ZZE"), TEXT("っぞ"), TEXT("ZZO"),
+		TEXT("ざ"), TEXT("ZA"), TEXT("じ"), TEXT("JI"), TEXT("ず"), TEXT("ZU"), TEXT("ぜ"), TEXT("ZE"), TEXT("ぞ"), TEXT("ZO"),
+		TEXT("っだ"), TEXT("DDA"), TEXT("っぢ"), TEXT("JJI"), TEXT("っづ"), TEXT("ZZU"), TEXT("っで"), TEXT("DDE"), TEXT("っど"), TEXT("DDO"),
+		TEXT("だ"), TEXT("DA"), TEXT("ぢ"), TEXT("JI"), TEXT("づ"), TEXT("ZU"), TEXT("で"), TEXT("DE"), TEXT("ど"), TEXT("DO"),
+		TEXT("っば"), TEXT("BBA"), TEXT("っび"), TEXT("BBI"), TEXT("っぶ"), TEXT("BBU"), TEXT("っべ"), TEXT("BBE"), TEXT("っぼ"), TEXT("BBO"),
+		TEXT("ば"), TEXT("BA"), TEXT("び"), TEXT("BI"), TEXT("ぶ"), TEXT("BU"), TEXT("べ"), TEXT("BE"), TEXT("ぼ"), TEXT("BO"),
+		TEXT("っぱ"), TEXT("PPA"), TEXT("っぴ"), TEXT("PPI"), TEXT("っぷ"), TEXT("PPU"), TEXT("っぺ"), TEXT("PPE"), TEXT("っぽ"), TEXT("PPO"),
+		TEXT("ぱ"), TEXT("PA"), TEXT("ぴ"), TEXT("PI"), TEXT("ぷ"), TEXT("PU"), TEXT("ぺ"), TEXT("PE"), TEXT("ぽ"), TEXT("PO"),
 
-		"っあ", "AA", "っい", "II", "っう", "UU", "っえ", "EE", "っお", "OO",
-		"あ", "A", "い", "I", "う", "U", "え", "E", "お", "O",
-		"っを", "OO", "っん", "NN",
-		"を", "O", "ん", "N",
-		"ー", "",
+		TEXT("っあ"), TEXT("AA"), TEXT("っい"), TEXT("II"), TEXT("っう"), TEXT("UU"), TEXT("っえ"), TEXT("EE"), TEXT("っお"), TEXT("OO"),
+		TEXT("あ"), TEXT("A"), TEXT("い"), TEXT("I"), TEXT("う"), TEXT("U"), TEXT("え"), TEXT("E"), TEXT("お"), TEXT("O"),
+		TEXT("っを"), TEXT("OO"), TEXT("っん"), TEXT("NN"),
+		TEXT("を"), TEXT("O"), TEXT("ん"), TEXT("N"),
+		TEXT("ー"), TEXT(""),
 		NULL, NULL,
 	};
 
@@ -274,30 +274,30 @@ CString conv_romaji(HWND hwnd, unsigned char *str)
 			strRep = romaji[nRomaji*2+1];
 			conv_lower((unsigned char *)strRep.GetBuffer(0));
 			strRep.ReleaseBuffer();
-			strWork.Format("%s%s%s", strWork.Left(nPos), strRep, strWork.Right(nLenOrg-(nPos+nLenKey)));
+			strWork.Format("%s%s%s"), strWork.Left(nPos), strRep, strWork.Right(nLenOrg-(nPos+nLenKey)));
 		}
 		nRomaji++;
 	}
 	*/
 
-	strWork = conv_kan2hira(hwnd, (unsigned char*)strWork.GetBuffer(0));
+	strWork = conv_kan2hira(hwnd, strWork);
 
 	nRomaji = 0;
 	while (romaji[nRomaji*2] != NULL) {
 		while((nPos = strWork.Find(romaji[nRomaji*2])) != -1) {
 			int		nLenOrg = strWork.GetLength();
-			int		nLenKey = strlen(romaji[nRomaji*2]);
+			int		nLenKey = lstrlen(romaji[nRomaji*2]);
 			strRep = romaji[nRomaji*2+1];
 			conv_lower((unsigned char *)strRep.GetBuffer(0));
 			strRep.ReleaseBuffer();
 			conv_first_upper((unsigned char *)strRep.GetBuffer(0));
 			strRep.ReleaseBuffer();
-			strWork.Format("%s%s%s", strWork.Left(nPos), strRep, strWork.Right(nLenOrg-(nPos+nLenKey)));
+			strWork.Format(TEXT("%s%s%s"), strWork.Left(nPos), strRep, strWork.Right(nLenOrg-(nPos+nLenKey)));
 		}
 		nRomaji++;
 	}
 
-	conv_zen2hans((unsigned char *)strRep.GetBuffer(strWork.GetLength()*2+1), (const unsigned char *)(const char *)strWork, CONV_ALL);
+	conv_zen2hans(strRep.GetBuffer(strWork.GetLength()*2+1), strWork, CONV_ALL);
 	strWork.ReleaseBuffer();
 	strRep.ReleaseBuffer();
 	return strRep;
@@ -307,10 +307,10 @@ STEP_API bool WINAPI STEPOnCommand(UINT nID, HWND hWnd)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 	if (nID == nIDReConvHiragana) {
-		static	const char *sMessage = "MS-IME2002/2000以外では正常に動作しない可能性があります。\n\n"
-									   "変換を実行してもよろしいですか？";
+		static const auto sMessage = TEXT("MS-IME2002/2000以外では正常に動作しない可能性があります。\n\n"
+									   "変換を実行してもよろしいですか？");
 		static bool bKan2HiraConfirmIME = false;
-		if (bKan2HiraConfirmIME == true || MessageBox(hWnd, sMessage, "ひらがなに変換", MB_YESNO|MB_TOPMOST) == IDYES) {
+		if (bKan2HiraConfirmIME == true || MessageBox(hWnd, sMessage, TEXT("ひらがなに変換"), MB_YESNO|MB_TOPMOST) == IDYES) {
 			bKan2HiraConfirmIME = true;
 			int sx, sy, ex, ey;
 			if (STEPGetSelectedRange(&sx, &sy, &ex, &ey)) {
@@ -321,8 +321,8 @@ STEP_API bool WINAPI STEPOnCommand(UINT nID, HWND hWnd)
 						for (int nColumn = sx; nColumn <= ex; nColumn++) {
 							CString	strText;
 							// セルのテキストを取得
-							strText = conv_kan2hira(hWnd, (unsigned char*)STEPGetSubItemText(nItem, nColumn));
-							STEPChangeSubItemText(nItem, nColumn, (LPCTSTR)conv_kan2hira(hWnd, (unsigned char*)strText.GetBuffer(0)));
+							strText = conv_kan2hira(hWnd, STEPGetSubItemText(nItem, nColumn));
+							STEPChangeSubItemText(nItem, nColumn, conv_kan2hira(hWnd, strText));
 						}
 					}
 				}
@@ -331,10 +331,10 @@ STEP_API bool WINAPI STEPOnCommand(UINT nID, HWND hWnd)
 		return true;
 	}
 	if (nID == nIDReConvRomaji) {
-		static	const char *sMessage = "MS-IME2002/2000以外では正常に動作しない可能性があります。\n\n"
-									   "変換を実行してもよろしいですか？";
+		static const auto sMessage = TEXT("MS-IME2002/2000以外では正常に動作しない可能性があります。\n\n"
+									   "変換を実行してもよろしいですか？");
 		static bool bRomajiConfirmIME = false;
-		if (bRomajiConfirmIME == true || MessageBox(hWnd, sMessage, "ローマ字に変換", MB_YESNO|MB_TOPMOST) == IDYES) {
+		if (bRomajiConfirmIME == true || MessageBox(hWnd, sMessage, TEXT("ローマ字に変換"), MB_YESNO|MB_TOPMOST) == IDYES) {
 			int sx, sy, ex, ey;
 			if (STEPGetSelectedRange(&sx, &sy, &ex, &ey)) {
 				for (int nItem = sy; nItem <= ey; nItem++) {
@@ -344,8 +344,8 @@ STEP_API bool WINAPI STEPOnCommand(UINT nID, HWND hWnd)
 						for (int nColumn = sx; nColumn <= ex; nColumn++) {
 							CString	strText;
 							// セルのテキストを取得
-							strText = conv_romaji(hWnd, (unsigned char*)STEPGetSubItemText(nItem, nColumn));
-							STEPChangeSubItemText(nItem, nColumn, (LPCTSTR)conv_kan2hira(hWnd, (unsigned char*)strText.GetBuffer(0)));
+							strText = conv_romaji(hWnd, STEPGetSubItemText(nItem, nColumn));
+							STEPChangeSubItemText(nItem, nColumn, conv_kan2hira(hWnd, strText));
 						}
 					}
 				}

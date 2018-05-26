@@ -42,7 +42,7 @@ bool (WINAPI *STEPItemHasChildren)(int);
 bool (WINAPI *STEPGetSelectedRange)(int*, int*, int* , int*);
 bool (WINAPI *STEPIsItemFile)(int);
 void (WINAPI *STEPChangeSubItemText)(int nItem, int nColumn, LPCTSTR szText);
-const char* (WINAPI *STEPGetSubItemText)(int nItem, int nColumn);
+LPCTSTR (WINAPI *STEPGetSubItemText)(int nItem, int nColumn);
 void (WINAPI *STEPGetFileInfo)(int nItem, FILE_INFO* info);
 UINT (WINAPI *STEPGETColumnType)(int nColumn);
 bool (WINAPI *STEPIsNumeric)(LPCTSTR szText); /* STEP 037 */

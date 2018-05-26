@@ -32,7 +32,7 @@ extern STEP_API bool (WINAPI *STEPItemHasChildren)(int);
 extern STEP_API bool (WINAPI *STEPGetSelectedRange)(int*, int*, int* , int*);
 extern STEP_API bool (WINAPI *STEPIsItemFile)(int);
 extern STEP_API void (WINAPI *STEPChangeSubItemText)(int nItem, int nColumn, LPCTSTR szText);
-extern STEP_API const char* (WINAPI *STEPGetSubItemText)(int nItem, int nColumn);
+extern STEP_API LPCTSTR (WINAPI *STEPGetSubItemText)(int nItem, int nColumn);
 extern STEP_API void (WINAPI *STEPGetFileInfo)(int nItem, FILE_INFO* info);
 extern STEP_API UINT (WINAPI *STEPGETColumnType)(int nColumn);
 extern STEP_API bool (WINAPI *STEPIsCurrentCellEditOK)(void);
